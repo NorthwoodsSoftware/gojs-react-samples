@@ -1,0 +1,29 @@
+.gojs-wrapper-div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  height: 500px;
+}
+
+.diagram-component {
+  flex-grow: 1;
+  border: 1px solid black;
+}
+
+.palette-component {
+  height: 100px;
+  background-color: beige;
+  border: 1px solid black;
+}
+
+.overview-component {
+  z-index: 99;
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 150px;
+  height: 100px;
+  background-color: aliceblue;
+  border: 1px solid black;
+}

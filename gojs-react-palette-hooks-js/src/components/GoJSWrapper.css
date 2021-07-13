@@ -1,0 +1,18 @@
+.gojs-wrapper-div {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 600px;
+  height: 500px;
+}
+
+.diagram-component {
+  flex-grow: 1;
+  border: 1px solid black;
+}
+
+.palette-component {
+  width: 100px;
+  background-color: beige;
+  border: 1px solid black;
+}

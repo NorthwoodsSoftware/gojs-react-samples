@@ -1,0 +1,11 @@
+label {
+  font: 300 1rem Roboto, helvetica, sans-serif;
+  color: #212121; /* Grey 900 */
+  display: block;
+  padding: 2px;
+}
+
+p {
+  font: 300 1rem Roboto, helvetica, sans-serif;
+  color: #212121; /* Grey 900 */
+}
