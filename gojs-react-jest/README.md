@@ -8,9 +8,27 @@ It makes use of the [gojs-react](https://github.com/NorthwoodsSoftware/gojs-reac
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-In addition to the packages included with CRA, this sample includes the canvas npm package to allow jsdom to mock a Canvas element.
+In addition to the packages included with CRA, this sample requires the `canvas` npm package to allow `jsdom` to mock a Canvas HTML Element.
 
-See the [App.test.tsx](./src/App.test.tsx) file for an example of testing using Jest.
+See the [App.test.tsx](./src/App.test.tsx) file for an example of testing using Jest. Note that [jest timer mocks](https://jestjs.io/docs/timer-mocks) are required to correctly mock GoJS:
+
+```tsx
+// initialize the Diagram and Robot prior to all tests
+beforeAll(() => {
+  // use Jest's fake timers to ensure Diagram.delayInitialization is called in time
+  jest.useFakeTimers();
+  const { container } = render(<App />);
+  jest.runOnlyPendingTimers();
+  // ... rest of setup
+```
+
+Our example resets this afterwards:
+
+```tsx
+afterAll(() => {
+  jest.useRealTimers();
+});
+```
 
 ## Installation
 
