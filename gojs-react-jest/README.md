@@ -20,6 +20,7 @@ beforeAll(() => {
   const { container } = render(<App />);
   jest.runOnlyPendingTimers();
   // ... rest of setup
+})
 ```
 
 Our example resets this afterwards:
@@ -29,6 +30,8 @@ afterAll(() => {
   jest.useRealTimers();
 });
 ```
+
+Additionally, this sample makes use of the [GoJS Robot extension](https://gojs.net/latest/api/symbols/Robot.html) to simulate input on the diagram.
 
 ## Installation
 
