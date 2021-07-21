@@ -11,7 +11,7 @@ describe('ReactDiagram tests', () => {
     jest.useFakeTimers();
     const { container } = render(<App />);
     jest.runOnlyPendingTimers();
-    // grab the diagram via it's div from the class name given to it
+    // grab the diagram via its div from the class name given to it
     diagram = (container.getElementsByClassName('diagram-component')[0] as any).goDiagram;
   });
 
