@@ -38,6 +38,16 @@ describe('ReactDiagram tests', () => {
     expect(beta?.data.color).toBe('orange');
   });
 
+  test('Has selection adornment', () => {
+    const beta = diagram.findNodeForKey(1);
+    if (!beta) return;
+
+    diagram.select(beta);
+    var adorn = beta.findAdornment('Selection');
+    console.log(adorn);
+    expect(beta.adornments.count).toBe(1);
+  });
+
   test('node deleted', () => {
     const beta = diagram.findNodeForKey(1);
     diagram.select(beta);
