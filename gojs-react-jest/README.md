@@ -10,24 +10,44 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In addition to the packages included with CRA, this sample requires the `canvas` npm package to allow `jsdom` to mock a Canvas HTML Element.
 
-See the [App.test.tsx](./src/App.test.tsx) file for an example of testing using Jest. Note that [jest timer mocks](https://jestjs.io/docs/timer-mocks) are required to correctly mock GoJS:
+See the [App.test.tsx](./src/App.test.tsx) file for an example of testing using Jest. Note the following requirements to make Jest and jsdom work effectively for React diagram testing:
+- the scrollTo function should be mocked, as it's used internally in GoJS,
+- [jest timer mocks](https://jestjs.io/docs/timer-mocks) are used to ensure the diagram is created in time,
+- the diagram's div is given explicit sizing, as jsdom doesn't have layout:
 
 ```tsx
-// initialize the Diagram and Robot prior to all tests
-beforeAll(() => {
+window.scrollTo = jest.fn();  // mock scrollTo
+
+...
+
+// initialize the Diagram and Robot prior to each test
+beforeEach(() => {
   // use Jest's fake timers to ensure Diagram.delayInitialization is called in time
   jest.useFakeTimers();
   const { container } = render(<App />);
   jest.runOnlyPendingTimers();
-  // ... rest of setup
-})
+  
+  // grab the diagram from the class name given to its div
+  diagram = (container.getElementsByClassName('diagram-component')[0] as any).goDiagram;
+  robot = new Robot(diagram);
+
+  // jsdom has no layout by default, so we have to add width/height manually
+  Object.defineProperty(diagram.div, 'clientWidth', { configurable: true, value: 400 });
+  Object.defineProperty(diagram.div, 'clientHeight', { configurable: true, value: 400 });
+  diagram.animationManager.stopAnimation();
+  diagram.maybeUpdate(); // will trigger a resize with the new width/height
+});
 ```
 
-Our example resets this afterwards:
+Our example resets the timers and mocks afterwards:
 
 ```tsx
-afterAll(() => {
+afterEach(() => {
   jest.useRealTimers();
+});
+
+afterAll(() => {
+  jest.clearAllMocks()
 });
 ```
 
