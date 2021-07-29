@@ -67,7 +67,6 @@ export class DiagramWrapper extends React.Component<DiagramProps, {}> {
           'undoManager.isEnabled': true,  // must be set to allow for model change listening
           // 'undoManager.maxHistoryLength': 0,  // uncomment disable undo/redo functionality
           'clickCreatingTool.archetypeNodeData': { text: 'new node', color: 'lightblue' },
-          layout: $(go.ForceDirectedLayout),
           model: $(go.GraphLinksModel,
             {
               linkKeyProperty: 'key',  // IMPORTANT! must be defined for merges and data sync when using GraphLinksModel
@@ -88,72 +87,9 @@ export class DiagramWrapper extends React.Component<DiagramProps, {}> {
             })
         });
 
-    const nodeHoverAdornment =
-      $(go.Adornment, 'Spot',
-        {
-          background: 'transparent',
-          alignment: go.Spot.Right,
-          // hide the Adornment when the mouse leaves it
-          mouseLeave: function (e, obj) {
-            var ad = obj.part as go.Adornment;
-            ad.adornedPart?.removeAdornment('mouseHover');
-          },
-        },
-        $(go.Placeholder, {
-          background: 'transparent', // to allow this Placeholder to be "seen" by mouse events
-          isActionable: true, // needed because this is in a temporary Layer
-          click: (e: go.InputEvent, obj: go.GraphObject) => {
-            var node = (obj.part as go.Adornment).adornedPart;
-            node?.diagram?.select(node);
-          },
-        }),
-        $(go.Panel, 'Auto', // this whole Panel is a link label
-          { name: 'TESTPANEL', alignment: go.Spot.RightCenter, alignmentFocus: go.Spot.RightCenter },
-          $(go.Shape, 'RoundedRectangle',
-            {
-              name: 'MENU_SHAPE',
-              fill: 'white',
-              strokeWidth: 0,
-              cursor: 'pointer',
-              height: 40,
-            }
-          ),
-          $('Button',
-            {
-              'ButtonBorder.fill': 'white',
-              'ButtonBorder.stroke': 'white',
-              _buttonFillOver: '#EFF1F3',
-              _buttonStrokeOver: '#EFF1F3',
-              width: 100
-            },
-            $(go.TextBlock, 'View details', { margin: 4, alignment: go.Spot.Left })
-          )
-        )
-      );
-
     // define a simple Node template
     diagram.nodeTemplate =
       $(go.Node, 'Auto',  // the Shape will go around the TextBlock
-        // {
-        //   selectionAdornmentTemplate:
-        //     $(go.Adornment, 'Spot',
-        //       $(go.Panel, 'Auto',
-        //         $(go.Shape, { fill: null, stroke: 'dodgerblue', strokeWidth: 3 }),
-        //         $(go.Placeholder)
-        //       ),
-        //       $('Button',
-        //         {
-        //           alignment: go.Spot.TopRight, alignmentFocus: go.Spot.BottomRight,
-        //           mouseEnter: (e, obj) => {
-        //             var node = obj.part;
-        //             nodeHoverAdornment.adornedObject = node;
-        //             node?.addAdornment('mouseHover', nodeHoverAdornment);
-        //           }
-        //         },
-        //         $(go.TextBlock, 'View')
-        //       )
-        //     )
-        // },
         new go.Binding('location', 'loc', go.Point.parse).makeTwoWay(go.Point.stringify),
         $(go.Shape, 'RoundedRectangle',
           {

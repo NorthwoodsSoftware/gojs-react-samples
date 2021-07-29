@@ -4,23 +4,35 @@ import { render } from '@testing-library/react';
 import App from './App';
 import { Robot } from './Robot';
 
+window.scrollTo = jest.fn();  // mock scrollTo
+
 describe('ReactDiagram tests', () => {
   let diagram: go.Diagram;
   let robot: Robot;
 
-  // initialize the Diagram and Robot prior to all tests
-  beforeAll(() => {
+  // initialize the Diagram and Robot prior to each test
+  beforeEach(() => {
     // use Jest's fake timers to ensure Diagram.delayInitialization is called in time
     jest.useFakeTimers();
     const { container } = render(<App />);
     jest.runOnlyPendingTimers();
-    // grab the diagram via its div from the class name given to it
+    // grab the diagram from the class name given to its div
     diagram = (container.getElementsByClassName('diagram-component')[0] as any).goDiagram;
     robot = new Robot(diagram);
+
+    // jsdom has no layout by default, so we have to add width/height manually
+    Object.defineProperty(diagram.div, 'clientWidth', { configurable: true, value: 400 });
+    Object.defineProperty(diagram.div, 'clientHeight', { configurable: true, value: 400 });
+    diagram.animationManager.stopAnimation();
+    diagram.maybeUpdate(); // will trigger a resize with the new width/height
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    jest.clearAllMocks()
   });
 
   test('renders diagram', () => {
@@ -43,9 +55,9 @@ describe('ReactDiagram tests', () => {
     if (!beta) return;
 
     diagram.select(beta);
-    var adorn = beta.findAdornment('Selection');
-    console.log(adorn);
+    diagram.maybeUpdate();  // force update since adornments are shown async
     expect(beta.adornments.count).toBe(1);
+    expect(beta.findAdornment('Selection')).not.toBeNull();
   });
 
   test('node deleted', () => {
