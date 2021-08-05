@@ -18,13 +18,15 @@ describe('ReactDiagram tests', () => {
     jest.runOnlyPendingTimers();
     // grab the diagram from the class name given to its div
     diagram = (container.getElementsByClassName('diagram-component')[0] as any).goDiagram;
-    robot = new Robot(diagram);
+    // disable animation for testing;
+    // jsdom has no layout by default, so we have to set a viewSize
+    diagram.commit((d) => {
+      d.animationManager.stopAnimation();
+      d.animationManager.isEnabled = false;
+      d.viewSize = new go.Size(400, 400);
+    });
 
-    // jsdom has no layout by default, so we have to add width/height manually
-    Object.defineProperty(diagram.div, 'clientWidth', { configurable: true, value: 400 });
-    Object.defineProperty(diagram.div, 'clientHeight', { configurable: true, value: 400 });
-    diagram.animationManager.stopAnimation();
-    diagram.maybeUpdate(); // will trigger a resize with the new width/height
+    robot = new Robot(diagram);
   });
 
   afterEach(() => {
