@@ -2,7 +2,7 @@
 *  Copyright (C) 1998-2021 by Northwoods Software Corporation. All Rights Reserved.
 */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useImmer } from 'use-immer';
 import * as go from 'gojs';
 
@@ -13,6 +13,7 @@ import './App.css';
 
 export default function App() {
   // state variables
+  const [readOnly, setReadOnly] = useState(false);
   const [diagramData, updateDiagramData] = useImmer({
     nodeDataArray: [
       { key: 1, text: 'Alpha', color: 'lightblue' },
@@ -193,6 +194,12 @@ export default function App() {
     });
   }
 
+  function handleReadOnlyChange(e) {
+    const target = e.target;
+    const value = target.checked;
+    setReadOnly(!readOnly);
+  }
+
   function handleRelinkChange(e) {
     const target = e.target;
     const value = target.checked;
@@ -229,7 +236,16 @@ export default function App() {
         skipsDiagramUpdate={diagramData.skipsDiagramUpdate}
         onDiagramEvent={handleDiagramEvent}
         onModelChange={handleModelChange}
+        readOnly={readOnly}
       />
+      <label>
+        Read only?
+        <input
+          type='checkbox'
+          id='readOnly'
+          checked={readOnly}
+          onChange={handleReadOnlyChange} />
+      </label>
       <label>
         Allow Relinking?
         <input

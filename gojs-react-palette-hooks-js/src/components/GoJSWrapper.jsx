@@ -2,20 +2,37 @@
 *  Copyright (C) 1998-2021 by Northwoods Software Corporation. All Rights Reserved.
 */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import * as go from 'gojs';
 import { ReactDiagram, ReactPalette } from 'gojs-react';
 
 import './GoJSWrapper.css';
 
 export default function GoJSWrapper(props) {
-  const diagramRef = useCallback(elt => {
-    if (elt === null) return;
-    const diagram = elt.getDiagram();
+  const diagramRef = useRef(null);
+
+  // add/remove listeners
+  useEffect(() => {
+    if (diagramRef.current === null) return;
+    const diagram = diagramRef.current.getDiagram();
     if (diagram instanceof go.Diagram) {
       diagram.addDiagramListener('ChangedSelection', props.onDiagramEvent);
     }
+    return () => {
+      if (diagram instanceof go.Diagram) {
+        diagram.removeDiagramListener('ChangedSelection', props.onDiagramEvent);
+      }
+    }
   }, [props.onDiagramEvent]);
+
+  // set whether diagram is read only
+  useEffect(() => {
+    if (diagramRef.current === null) return;
+    const diagram = diagramRef.current.getDiagram();
+    if (diagram instanceof go.Diagram) {
+      diagram.isReadOnly = props.readOnly;
+    }
+  }, [props.readOnly]);
 
   function initDiagram() {
     const $ = go.GraphObject.make;
