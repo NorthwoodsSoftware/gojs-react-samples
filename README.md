@@ -1,6 +1,6 @@
 # gojs-react-samples
 
-### By Northwoods Software for [GoJS 2.1](https://gojs.net)
+### By Northwoods Software for [GoJS](https://gojs.net)
 
 This repository provides a few examples of using GoJS in a React app.
 Check out the [Intro page on using GoJS with React](https://gojs.net/latest/intro/react.html) for more information.
